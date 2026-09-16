@@ -1,0 +1,16 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+<section class="page-head"><div><span class="eyebrow">INVENTORY</span><h1>통합 재고</h1><p>모든 Excel의 재고를 통합 검색합니다. Sheet를 선택하지 않으면 전체 Sheet가 검색됩니다.</p></div><a class="primary" href="/upload">+ Excel 업로드</a></section>
+<section class="panel">
+  <div class="toolbar inventory-toolbar">
+    <input id="globalSearch" class="search" placeholder="Code, 품명, 모델, 용량, 위치, 비고 등 전체 검색" autofocus>
+    <select id="fileFilter"><option value="">모든 Excel</option></select>
+    <div class="sheet-picker" id="sheetPicker"><button type="button" class="ghost sheet-picker-button">Sheet 선택 <span id="sheetSelectionText">전체</span></button><div class="sheet-picker-menu" id="sheetPickerMenu"></div></div>
+  </div>
+  <div class="sheet-help">Sheet를 하나도 선택하지 않으면 전체 Sheet를 검색합니다. 특정 Sheet만 선택하면 해당 Sheet의 재고만 검색합니다.</div><div id="lowStockBar" class="low-stock-bar" style="display:none"></div><div id="dynamicFilters" class="filters"></div>
+  <div class="table-wrap"><table id="inventoryTable"><thead></thead><tbody></tbody></table></div>
+  <div id="resultMeta" class="result-meta"></div>
+  <div id="pagination" class="pagination"></div>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{url_for('static',filename='js/inventory.js')}}"></script>{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+<section class="page-head"><div><span class="eyebrow">AUDIT</span><h1>관리자 로그</h1><p>관리자가 수행한 모든 작업(업로드/삭제/수정/승인 등)이 여기에 남습니다.</p></div></section>
+<section class="panel">
+  <div class="toolbar">
+    <input id="logSearch" class="search" placeholder="처리자, 상세내용으로 검색">
+    <input id="logDate" type="date">
+    <select id="logAction">
+      <option value="">전체 작업</option>
+      {% for key, label in actions.items() %}
+      <option value="{{key}}">{{label}}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="table-wrap">
+    <table id="logTable">
+      <thead><tr><th>일시</th><th>처리자</th><th>작업</th><th>상세내용</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <div id="logMeta" class="result-meta"></div>
+  <div id="logPagination" class="pagination"></div>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{url_for('static',filename='js/adminlog.js')}}"></script>{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+<section class="page-head"><div><span class="eyebrow">HISTORY</span><h1>출고 내역</h1><p>언제, 어느 사이트로, 몇 개를, 왜 출고했는지 전부 여기에 남습니다.</p></div></section>
+<section class="panel">
+  <div class="toolbar">
+    <input id="stockoutSearch" class="search" placeholder="Code, 품명, 사이트, 사유로 검색">
+    <input id="stockoutDate" type="date">
+  </div>
+  <div class="table-wrap">
+    <table id="stockoutTable">
+      <thead><tr><th>일시</th><th>Code</th><th>품명</th><th>사이트</th><th>수량</th><th>사유</th><th>처리자</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <div id="stockoutMeta" class="result-meta"></div>
+  <div id="stockoutPagination" class="pagination"></div>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{url_for('static',filename='js/stockout.js')}}"></script>{% endblock %}

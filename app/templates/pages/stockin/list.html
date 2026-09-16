@@ -1,0 +1,23 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+<section class="page-head"><div><span class="eyebrow">HISTORY</span><h1>입고 내역</h1><p>수동입고와 입고요청 승인 후 실제로 반영된 입고 이벤트가 전부 여기에 남습니다.</p></div></section>
+<section class="panel">
+  <div class="toolbar">
+    <input id="stockinSearch" class="search" placeholder="Code, 품명, 사이트, 사유로 검색">
+    <select id="stockinSource">
+      <option value="">전체</option>
+      <option value="manual">수동</option>
+      <option value="auto_request">자동(요청승인)</option>
+    </select>
+  </div>
+  <div class="table-wrap">
+    <table id="stockinTable">
+      <thead><tr><th>일시</th><th>구분</th><th>Code</th><th>품명</th><th>사이트</th><th>수량</th><th>사유</th><th>처리자</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <div id="stockinMeta" class="result-meta"></div>
+  <div id="stockinPagination" class="pagination"></div>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{url_for('static',filename='js/stockin.js')}}"></script>{% endblock %}
