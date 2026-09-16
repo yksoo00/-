@@ -12,14 +12,14 @@ logger = logging.getLogger(__name__)
 
 
 ACTION_LABEL = {
-    "row_edit": "재고 수정",
-    "row_delete": "재고 삭제",
-    "column_add": "컬럼 추가",
     "excel_upload": "Excel 업로드",
     "excel_delete": "Excel 삭제",
-    "user_create": "사용자 생성",
+    "row_edit": "재고 수정",
+    "row_delete": "재고 행 삭제",
+    "column_add": "컬럼 추가",
+    "user_create": "계정 생성",
     "stockrequest_approve": "입고요청 승인",
-    "stockrequest_arrive": "입고요청 물품도착",
+    "stockrequest_arrive": "물품도착 처리",
 }
 
 
@@ -31,8 +31,8 @@ def _serialize(entry):
         "target_type": entry.target_type,
         "target_id": entry.target_id,
         "detail": entry.detail,
-        "user": (entry.user.name or entry.user.username) if entry.user else None,
         "created_at": entry.created_at.strftime("%Y-%m-%d %H:%M"),
+        "user": (entry.user.name or entry.user.username) if entry.user else None,
     }
 
 
@@ -42,6 +42,9 @@ def list_adminlog():
 
     page = max(request.args.get("page", 1, type=int), 1)
     page_size = min(max(request.args.get("page_size", 10, type=int), 1), 200)
+    sort_col = request.args.get("sort", "").strip()
+    sort_dir = request.args.get("dir", "desc").strip().lower()
+    sort_dir = "asc" if sort_dir == "asc" else "desc"
 
     q = request.args.get("q", "").strip()
     action = request.args.get("action", "").strip()
@@ -51,11 +54,11 @@ def list_adminlog():
 
     if q:
         like = f"%{q}%"
-        query = query.outerjoin(User, AdminLog.user_id == User.id).filter(
+        query = query.filter(
             db.or_(
+                AdminLog.action.ilike(like),
                 AdminLog.detail.ilike(like),
-                User.name.ilike(like),
-                User.username.ilike(like),
+                AdminLog.target_type.ilike(like),
             )
         )
 
@@ -73,8 +76,22 @@ def list_adminlog():
     total_pages = max((total + page_size - 1) // page_size, 1)
     page = min(page, total_pages)
 
+    sortable_columns = {
+        "created_at": AdminLog.created_at,
+        "action": AdminLog.action,
+        "target_type": AdminLog.target_type,
+    }
+
+    if sort_col == "user":
+        query = query.outerjoin(User, AdminLog.user_id == User.id)
+        column_expr = db.func.coalesce(User.name, User.username)
+    else:
+        column_expr = sortable_columns.get(sort_col, AdminLog.created_at)
+
+    order_by_clause = column_expr.asc() if sort_dir == "asc" else column_expr.desc()
+
     rows = (
-        query.order_by(AdminLog.created_at.desc())
+        query.order_by(order_by_clause)
         .offset((page - 1) * page_size)
         .limit(page_size)
         .all()
@@ -87,12 +104,14 @@ def list_adminlog():
             "page": page,
             "page_size": page_size,
             "total_pages": total_pages,
-            "actions": ACTION_LABEL,
+            "actions": [
+                {"value": key, "label": label} for key, label in ACTION_LABEL.items()
+            ],
         }
     )
 
 
-@adminlog_bp.get("/admin/logs")
+@adminlog_bp.get("/adminlog")
 @admin_required
 def adminlog_page():
-    return render_template("pages/adminlog/list.html", actions=ACTION_LABEL)
+    return render_template("pages/adminlog/list.html")

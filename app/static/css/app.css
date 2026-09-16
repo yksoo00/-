@@ -184,6 +184,54 @@ th.sorted{color:var(--ink)}
 .result-modal-box.error .result-modal-ok{background:var(--danger)}
 @keyframes rm-fade{from{opacity:0}to{opacity:1}}
 @keyframes rm-pop{from{opacity:0;transform:scale(.9) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
+/* ---------- 대시보드 차트 ---------- */
+.chart-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;margin-top:8px}
+.chart-box h3{margin:0 0 14px;font-size:14px;color:var(--muted);font-weight:800}
+.bar-chart{display:flex;flex-direction:column;gap:9px}
+.bar-row{display:grid;grid-template-columns:minmax(80px,140px) 1fr auto;align-items:center;gap:10px;font-size:12px}
+.bar-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700;color:var(--ink)}
+.bar-track{background:#eef2f7;border-radius:99px;height:16px;overflow:hidden}
+.bar-fill{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),#6f8cff);min-width:3px}
+.bar-value{font-weight:800;color:var(--muted);white-space:nowrap}
+
+/* ---------- 날짜 / 셀렉트 입력 ---------- */
+.date-field{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:11px;padding:0 12px;height:42px;background:#fff;font-size:13px;font-weight:700;color:var(--muted)}
+.date-field input{border:0;outline:0;font-family:inherit;font-size:13px;color:var(--ink);background:transparent;padding:0}
+.toolbar select,.chat-context select{height:42px;border:1px solid var(--line);border-radius:11px;padding:0 34px 0 12px;background:#fff url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath fill='%23667' d='M1 1l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 13px center/11px;font-family:inherit;font-size:13px;font-weight:700;color:var(--ink);appearance:none;cursor:pointer}
+.chat-context select{width:100%;margin-top:6px}
+.chat-context label{display:block;margin-bottom:14px;font-size:12px;font-weight:800;color:var(--muted)}
+
+/* ---------- 모바일 메뉴 ---------- */
+.nav-toggle{display:none;position:fixed;top:14px;left:14px;z-index:60;width:42px;height:42px;border:1px solid var(--line);border-radius:11px;background:#fff;font-size:17px;cursor:pointer;box-shadow:0 4px 14px rgba(18,38,63,.1)}
+.nav-backdrop{display:none;position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:45}
+.nav-backdrop.show{display:block}
+
+/* ---------- 반응형 ---------- */
+@media (max-width:900px){
+  .nav-toggle{display:block}
+  .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:50;transform:translateX(-100%);transition:transform .22s ease}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0;padding:70px 16px 28px}
+  .topbar{flex-wrap:wrap;gap:8px}
+  .cards{grid-template-columns:1fr}
+  .chart-grid{grid-template-columns:1fr}
+  .page-head{flex-direction:column;align-items:flex-start;gap:14px}
+  .page-actions{flex-wrap:wrap}
+  .toolbar{flex-direction:column;align-items:stretch}
+  .toolbar .search,.toolbar select,.date-field{width:100%}
+  .panel{padding:18px 14px}
+  .bar-row{grid-template-columns:minmax(64px,96px) 1fr auto;font-size:11px}
+  .modal-box{max-width:100%}
+  .modal-foot{justify-content:stretch}
+  .modal-foot button{flex:1}
+  .file-grid{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .pagination{gap:8px;font-size:12px}
+  .ebay-grid{grid-template-columns:1fr 1fr}
+  h1{font-size:22px}
+}
 .file-card-manage>form{display:flex;align-items:center;gap:7px}
 .file-card-manage>form .ghost{padding:9px 11px;font-size:12px}
 .page-actions{flex-wrap:wrap;justify-content:flex-end}

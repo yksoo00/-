@@ -30,6 +30,27 @@ function showResultModal(message, type) {
 
 window.showResultModal = showResultModal;
 
+// 모바일 사이드바 토글
+document.addEventListener('DOMContentLoaded', () => {
+  const toggle = document.getElementById('navToggle');
+  const sidebar = document.getElementById('sidebar');
+  const backdrop = document.getElementById('navBackdrop');
+  if (!toggle || !sidebar) return;
+
+  const close = () => {
+    sidebar.classList.remove('open');
+    backdrop?.classList.remove('show');
+  };
+
+  toggle.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    backdrop?.classList.toggle('show');
+  });
+
+  backdrop?.addEventListener('click', close);
+  sidebar.querySelectorAll('a').forEach((link) => link.addEventListener('click', close));
+});
+
 document.addEventListener('DOMContentLoaded', () => {
   const el = document.getElementById('flash-data');
   if (!el) return;

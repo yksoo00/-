@@ -108,3 +108,46 @@ $('#lowStockToggle')?.addEventListener('click', async () => {
     panel.scrollIntoView({behavior: 'smooth', block: 'start'});
   }
 });
+
+function fmtTotal(value) {
+  return Number.isInteger(value) ? String(value) : String(Number(value.toFixed(2)));
+}
+
+function renderBarChart(box, rows) {
+  if (!box) return;
+
+  if (!rows.length) {
+    box.innerHTML = '<div class="empty">최근 1년간 출고 기록이 없습니다.</div>';
+    return;
+  }
+
+  const max = Math.max(...rows.map((row) => row.total)) || 1;
+
+  box.innerHTML = rows.map((row) => `
+    <div class="bar-row" title="${esc(row.label)} · ${fmtTotal(row.total)}ea">
+      <span class="bar-label">${esc(row.label)}</span>
+      <span class="bar-track"><span class="bar-fill" style="width:${(row.total / max) * 100}%"></span></span>
+      <span class="bar-value">${fmtTotal(row.total)}ea</span>
+    </div>
+  `).join('');
+}
+
+async function loadStats() {
+  const siteBox = $('#siteChart');
+  const itemBox = $('#itemChart');
+  if (!siteBox && !itemBox) return;
+
+  try {
+    const response = await fetch('/api/stats/outflow');
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || '통계를 불러오지 못했습니다.');
+
+    renderBarChart(siteBox, data.sites || []);
+    renderBarChart(itemBox, data.items || []);
+  } catch (error) {
+    if (siteBox) siteBox.innerHTML = `<div class="empty">${esc(error.message)}</div>`;
+    if (itemBox) itemBox.innerHTML = '';
+  }
+}
+
+loadStats();
