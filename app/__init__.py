@@ -2,12 +2,15 @@ import logging
 import os
 import time
 import uuid
+
 from dotenv import load_dotenv
 from flask import Flask, g, request
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, current_user
-from .logging_config import configure_logging
+from flask_sqlalchemy import SQLAlchemy
 from werkzeug.exceptions import HTTPException
+from werkzeug.security import generate_password_hash
+
+from .logging_config import configure_logging
 
 load_dotenv()
 db = SQLAlchemy()
@@ -93,5 +96,23 @@ def create_app():
     register_blueprints(app)
     with app.app_context():
         db.create_all()
+        if User.query.first() is None:
+            admin_username = os.getenv("ADMIN_USERNAME", "").strip()
+            admin_password = os.getenv("ADMIN_PASSWORD", "")
+            if len(admin_username) < 3 or len(admin_password) < 4:
+                raise RuntimeError(
+                    "No users exist. Set ADMIN_USERNAME (at least 3 characters) "
+                    "and ADMIN_PASSWORD (at least 4 characters) before starting."
+                )
+
+            admin = User(
+                username=admin_username,
+                password_hash=generate_password_hash(admin_password),
+                role="admin",
+                name="Administrator",
+            )
+            db.session.add(admin)
+            db.session.commit()
+            logger.info("Initial administrator account created | username=%s", admin_username)
     logger.info("Flask application initialized")
     return app
